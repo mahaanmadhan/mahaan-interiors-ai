@@ -86,9 +86,12 @@ export default function App() {
             Into <span style={{ color: "#D4AF37" }}>Reality</span>
           </h1>
 
-          <p style={heroText}>
-            Luxury Interior Design for Apartments, Villas and Premium Homes in Hyderabad.
-          </p>
+          <p className="text-xl md:text-2xl text-gray-300 max-w-4xl">
+  Premium Turnkey Interior Solutions for
+  2BHK, 3BHK Apartments, Villas, Home
+  Renovations, Modular Kitchens and Office
+  Interiors in Hyderabad.
+</p>
 
           <div style={buttonWrapper}>
             <a href="#contact" style={goldButton}>Book Free Consultation</a>
