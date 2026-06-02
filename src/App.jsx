@@ -1,6 +1,8 @@
 import { db } from "./firebase";
 import { collection, addDoc } from "firebase/firestore";
 import { useState } from "react";
+import emailjs from "@emailjs/browser";
+
 import hero from "./assets/hero.jpg";
 import logo from "./assets/logo.png";
 import madhan from "./assets/madhan.png";
@@ -13,7 +15,9 @@ import project4 from "./assets/projects/project4.jpg";
 export default function App() {
   const [name, setName] = useState("");
   const [mobile, setMobile] = useState("");
+  const [customerEmail, setCustomerEmail] = useState("");
   const [location, setLocation] = useState("");
+  const [workType, setWorkType] = useState("");
   const [message, setMessage] = useState("");
 
   const handleSubmit = async (e) => {
@@ -23,27 +27,44 @@ export default function App() {
       await addDoc(collection(db, "leads"), {
         name,
         mobile,
+        customerEmail,
         location,
+        workType,
         message,
         status: "New Lead",
         createdAt: new Date(),
       });
 
+      await emailjs.send(
+        "service_jt549ne",
+        "template_g5mi1sb",
+        {
+          name,
+          mobile,
+          customer_email: customerEmail,
+          location,
+          workType,
+          message,
+        },
+        "OqhH0yDj7b3H3bhj0"
+      );
+
       alert("Enquiry Submitted Successfully!");
 
       setName("");
       setMobile("");
+      setCustomerEmail("");
       setLocation("");
+      setWorkType("");
       setMessage("");
     } catch (error) {
       console.error(error);
-      alert("Error saving lead");
+      alert("Error submitting enquiry");
     }
   };
 
   return (
     <div style={pageStyle}>
-      {/* Navbar */}
       <nav style={navStyle}>
         <img src={logo} alt="Mahaan Interiors" style={logoStyle} />
 
@@ -53,61 +74,41 @@ export default function App() {
           <a href="#services" style={navLink}>Services</a>
           <a href="#projects" style={navLink}>Projects</a>
           <a href="#contact" style={navLink}>Contact</a>
+          <a href="#reviews" style={navLink}>Reviews</a>
         </div>
       </nav>
 
-      {/* Hero */}
       <section id="home" style={heroStyle}>
-        <>
-  Designing Dreams Into
-  <br />
-  <span style={{ color: "#D4AF37" }}>
-    Reality
-  </span>
-</>
+        <div style={heroContent}>
+          <h1 style={heroTitle}>
+            Designing Dreams
+            <br />
+            Into <span style={{ color: "#D4AF37" }}>Reality</span>
+          </h1>
 
-        <p style={heroText}>
-          Luxury Interior Design for Apartments,
-Villas and Premium Homes in Hyderabad.
-        </p>
+          <p style={heroText}>
+            Luxury Interior Design for Apartments, Villas and Premium Homes in Hyderabad.
+          </p>
 
-        <div style={buttonWrapper}>
-          <a href="#contact" style={goldButton}>
-            Book Free Consultation
-          </a>
-
-          <a href="#projects" style={outlineButton}>
-            View Projects
-          </a>
+          <div style={buttonWrapper}>
+            <a href="#contact" style={goldButton}>Book Free Consultation</a>
+            <a href="#projects" style={outlineButton}>View Projects</a>
+          </div>
         </div>
       </section>
 
-      {/* Stats */}
       <section style={statsSection}>
-        <div>
-          <h2 style={statNumber}>80+</h2>
-          <p>Projects Completed</p>
-        </div>
-
-        <div>
-          <h2 style={statNumber}>8+</h2>
-          <p>Years Experience</p>
-        </div>
-
-        <div>
-          <h2 style={statNumber}>100%</h2>
-          <p>Client Satisfaction</p>
-        </div>
+        <div><h2 style={statNumber}>80+</h2><p>Projects Completed</p></div>
+        <div><h2 style={statNumber}>8+</h2><p>Years Experience</p></div>
+        <div><h2 style={statNumber}>100%</h2><p>Client Satisfaction</p></div>
       </section>
 
-      {/* About */}
       <section id="about" style={sectionStyle}>
         <h2 style={sectionTitle}>About Mahaan Interiors</h2>
 
         <p style={centerText}>
-          Mahaan Interiors specializes in premium home interiors, modular
-          kitchens, wardrobes, false ceilings and complete turnkey interior
-          solutions across Hyderabad.
+          Mahaan Interiors specializes in premium home interiors, modular kitchens,
+          wardrobes, false ceilings and complete turnkey interior solutions across Hyderabad.
         </p>
 
         <div style={founderWrapper}>
@@ -115,30 +116,27 @@ Villas and Premium Homes in Hyderabad.
 
           <div style={founderText}>
             <h3 style={goldHeading}>Meet Mahaan Madhan</h3>
-
             <p style={paragraphStyle}>
-              Founder of Mahaan Interiors with 18+ years of experience in
-              sales, client management and interior design execution. Having
-              completed around 80 interior projects across Hyderabad, Mahaan
-              Interiors focuses on premium living spaces, modular kitchens,
-              wardrobes and turnkey home interiors.
+              Founder of Mahaan Interiors with 18+ years of experience in sales,
+              client management and interior design execution. Having completed around
+              80 interior projects across Hyderabad, Mahaan Interiors focuses on premium
+              living spaces, modular kitchens, wardrobes and turnkey home interiors.
             </p>
           </div>
         </div>
       </section>
 
-      {/* Services */}
       <section id="services" style={sectionStyle}>
         <h2 style={sectionTitle}>Our Services</h2>
 
         <div style={cardsGrid}>
           {[
+            "Turnkey Full Home",
             "Modular Kitchens",
-            "Luxury Living Rooms",
+            "Only Wood Work",
             "Wardrobes",
             "False Ceilings",
-            "TV Units",
-            "Turnkey Interiors",
+            "Remodeling Work",
           ].map((item) => (
             <div key={item} style={serviceCard}>
               <h3>{item}</h3>
@@ -147,24 +145,52 @@ Villas and Premium Homes in Hyderabad.
         </div>
       </section>
 
-      {/* Project Gallery */}
       <section id="projects" style={sectionStyle}>
         <h2 style={sectionTitle}>Featured Projects</h2>
 
         <div style={galleryGrid}>
           {[project1, project2, project3, project4].map((img, index) => (
             <div key={index} style={galleryCard}>
-              <img
-                src={img}
-                alt={`Project ${index + 1}`}
-                style={galleryImage}
-              />
+              <img src={img} alt={`Project ${index + 1}`} style={galleryImage} />
             </div>
           ))}
         </div>
       </section>
 
-      {/* Lead Form */}
+      <section id="reviews" style={sectionStyle}>
+        <h2 style={sectionTitle}>Customer Reviews</h2>
+
+        <div style={reviewsGrid}>
+          {[
+            {
+              name: "Mr. Srinivas Reddy",
+              location: "Miyapur",
+              review:
+                "Mahaan Interiors completed our home interiors with very good finishing. The design suggestions and execution quality were excellent.",
+            },
+            {
+              name: "Mrs. Sirisha",
+              location: "Ameenpur",
+              review:
+                "We are very happy with the modular kitchen and wardrobes. The team explained everything clearly and delivered as promised.",
+            },
+            {
+              name: "Mr. Avinash",
+              location: "Ramky Harmony Hyderabad",
+              review:
+                "Professional team, good material quality and neat work. Mahaan Interiors gave our flat a premium look.",
+            },
+          ].map((item, index) => (
+            <div key={index} style={reviewCard}>
+              <h3 style={{ color: "#D4AF37" }}>{item.name}</h3>
+              <p style={{ color: "#aaa" }}>{item.location}</p>
+              <p style={paragraphStyle}>“{item.review}”</p>
+              <div style={{ color: "#D4AF37", fontSize: "22px" }}>★★★★★</div>
+            </div>
+          ))}
+        </div>
+      </section>
+
       <section id="contact" style={sectionStyle}>
         <h2 style={sectionTitle}>Request Free Design Consultation</h2>
 
@@ -186,11 +212,35 @@ Villas and Premium Homes in Hyderabad.
           />
 
           <input
+            value={customerEmail}
+            onChange={(e) => setCustomerEmail(e.target.value)}
+            placeholder="Email Address"
+            type="email"
+            style={inputStyle}
+          />
+
+          <input
             value={location}
             onChange={(e) => setLocation(e.target.value)}
             placeholder="Project Location"
             style={inputStyle}
           />
+
+          <select
+            value={workType}
+            onChange={(e) => setWorkType(e.target.value)}
+            style={inputStyle}
+            required
+          >
+            <option value="">Select Work Type</option>
+            <option value="Turnkey Full Home">Turnkey Full Home</option>
+            <option value="Small Box Work">Small Box Work</option>
+            <option value="Only Wood Work">Only Wood Work</option>
+            <option value="Remodeling Work">Remodeling Work</option>
+            <option value="Partial Work">Partial Work</option>
+            <option value="Kitchen Only">Kitchen Only</option>
+            <option value="Wardrobe Only">Wardrobe Only</option>
+          </select>
 
           <textarea
             value={message}
@@ -200,9 +250,7 @@ Villas and Premium Homes in Hyderabad.
             style={inputStyle}
           />
 
-          <button type="submit" style={goldButton}>
-            Submit Enquiry
-          </button>
+          <button type="submit" style={goldButton}>Submit Enquiry</button>
         </form>
 
         <p style={{ color: "#ccc", marginTop: "30px" }}>
@@ -210,7 +258,6 @@ Villas and Premium Homes in Hyderabad.
         </p>
       </section>
 
-      {/* WhatsApp Floating Button */}
       <a
         href="https://wa.me/918801861086"
         target="_blank"
@@ -245,7 +292,7 @@ const navStyle = {
 };
 
 const logoStyle = {
-  height: "60px",
+  height: "90px",
   objectFit: "contain",
 };
 
@@ -264,13 +311,9 @@ const navLink = {
 const heroStyle = {
   minHeight: "100vh",
   display: "flex",
-  flexDirection: "column",
-  justifyContent: "center",
-  alignItems: "flex-start",
+  alignItems: "center",
   textAlign: "left",
-
   padding: "120px 8% 60px",
-
   backgroundImage: `
     linear-gradient(
       rgba(0,0,0,0.55),
@@ -278,34 +321,39 @@ const heroStyle = {
     ),
     url(${hero})
   `,
-
   backgroundSize: "cover",
   backgroundPosition: "center",
   backgroundRepeat: "no-repeat",
 };
 
+const heroContent = {
+  maxWidth: "850px",
+  marginLeft: "70px",
+};
+
 const heroTitle = {
-  fontSize: "clamp(55px, 7vw, 95px)",
-  color: "white",
-  maxWidth: "700px",
-  lineHeight: "1.1",
-  marginBottom: "20px",
+  fontFamily: "Playfair Display, serif",
+  fontSize: "clamp(56px, 6vw, 95px)",
+  lineHeight: "1.02",
   fontWeight: "700",
+  color: "#ffffff",
+  marginBottom: "28px",
+  textShadow: "0 6px 30px rgba(0,0,0,0.7)",
 };
 
 const heroText = {
-  fontSize: "22px",
-  color: "#e0e0e0",
-  maxWidth: "650px",
-  lineHeight: "1.8",
+  fontSize: "clamp(24px, 3vw, 42px)",
+  color: "#f5f5f5",
+  lineHeight: "1.45",
+  maxWidth: "800px",
+  marginBottom: "30px",
 };
 
 const buttonWrapper = {
-  marginTop: "40px",
+  marginTop: "30px",
   display: "flex",
   gap: "20px",
   flexWrap: "wrap",
-  justifyContent: "center",
 };
 
 const goldButton = {
@@ -457,4 +505,18 @@ const whatsappButton = {
   textDecoration: "none",
   fontWeight: "bold",
   zIndex: 2000,
+};
+
+const reviewsGrid = {
+  display: "grid",
+  gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
+  gap: "25px",
+};
+
+const reviewCard = {
+  background: "#151515",
+  padding: "30px",
+  borderRadius: "18px",
+  border: "1px solid #333",
+  textAlign: "left",
 };
