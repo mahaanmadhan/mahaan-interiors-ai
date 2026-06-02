@@ -7,10 +7,10 @@ import hero from "./assets/hero.jpg";
 import logo from "./assets/logo.png";
 import madhan from "./assets/madhan.png";
 
-import project1 from "./assets/projects/project1.jpg";
-import project2 from "./assets/projects/project2.jpg";
-import project3 from "./assets/projects/project3.jpg";
-import project4 from "./assets/projects/project4.jpg";
+import project1 from "./assets/Projects/project1.jpg";
+import project2 from "./assets/Projects/project2.jpg";
+import project3 from "./assets/Projects/project3.jpg";
+import project4 from "./assets/Projects/project4.jpg";
 
 export default function App() {
   const [name, setName] = useState("");
