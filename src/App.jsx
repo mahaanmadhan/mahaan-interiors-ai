@@ -1,3 +1,9 @@
+import turnkeyHome from "./assets/turnkey-home.jpg";
+import modularKitchen from "./assets/modular-kitchen.jpg";
+import woodWork from "./assets/woodwork.jpg";
+import wardrobe from "./assets/wardrobe.jpg";
+import falseCeiling from "./assets/false-ceiling.jpg";
+import remodeling from "./assets/remodeling.jpg";
 import { db } from "./firebase";
 import { collection, addDoc } from "firebase/firestore";
 import { useState } from "react";
@@ -62,7 +68,32 @@ export default function App() {
       alert("Error submitting enquiry");
     }
   };
-
+const services = [
+  {
+    title: "Turnkey Full Home",
+    image: turnkeyHome,
+  },
+  {
+    title: "Modular Kitchens",
+    image: modularKitchen,
+  },
+  {
+    title: "Only Wood Work",
+    image: woodWork,
+  },
+  {
+    title: "Wardrobes",
+    image: wardrobe,
+  },
+  {
+    title: "False Ceilings",
+    image: falseCeiling,
+  },
+  {
+    title: "Remodeling Work",
+    image: remodeling,
+  },
+];
   return (
     <div style={pageStyle}>
       <nav style={navStyle}>
@@ -130,36 +161,36 @@ export default function App() {
       </section>
 
       <section id="services" style={sectionStyle}>
-        <h2 style={sectionTitle}>Our Services</h2>
+  <h2 style={sectionTitle}>Our Services</h2>
 
-        <div style={cardsGrid}>
-          {[
-            "Turnkey Full Home",
-            "Modular Kitchens",
-            "Only Wood Work",
-            "Wardrobes",
-            "False Ceilings",
-            "Remodeling Work",
-          ].map((item) => (
-            <div key={item} style={serviceCard}>
-              <h3>{item}</h3>
-            </div>
-          ))}
-        </div>
-      </section>
+  <div style={cardsGrid}>
+    {services.map((service) => (
+      <div key={service.title} style={serviceCard}>
+        <img
+          src={service.image}
+          alt={service.title}
+          style={{
+            width: "100%",
+            height: "220px",
+            objectFit: "cover",
+            borderRadius: "12px",
+          }}
+        />
 
-      <section id="projects" style={sectionStyle}>
-        <h2 style={sectionTitle}>Featured Projects</h2>
-
-        <div style={galleryGrid}>
-          {[project1, project2, project3, project4].map((img, index) => (
-            <div key={index} style={galleryCard}>
-              <img src={img} alt={`Project ${index + 1}`} style={galleryImage} />
-            </div>
-          ))}
-        </div>
-      </section>
-
+        <h3
+          style={{
+            color: "#fff",
+            textAlign: "center",
+            marginTop: "15px",
+            fontSize: "22px",
+          }}
+        >
+          {service.title}
+        </h3>
+      </div>
+    ))}
+  </div>
+</section>
       <section id="reviews" style={sectionStyle}>
         <h2 style={sectionTitle}>Customer Reviews</h2>
 
@@ -455,11 +486,11 @@ const cardsGrid = {
 
 const serviceCard = {
   background: "#151515",
-  padding: "30px",
+  padding: "15px",
   borderRadius: "16px",
-  border: "1px solid #222",
+  border: "1px solid rgba(212,175,55,0.2)",
+  overflow: "hidden",
 };
-
 const galleryGrid = {
   display: "grid",
   gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
